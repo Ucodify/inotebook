@@ -1,6 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const connectDB = require("./db");
+//var bcrypt = require("bcryptjs");
 
 dotenv.config();
 connectDB();
@@ -8,7 +9,7 @@ connectDB();
 const app = express();
 
 app.use(express.json());
-
+//const salt = bcrypt.genSaltSync(10);
 // app.use("/api", require("./routes/index"));
 //Avalaible routes
 app.use("/api/auth", require("./routes/auth"));
