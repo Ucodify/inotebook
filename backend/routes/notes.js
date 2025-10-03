@@ -29,6 +29,17 @@ router.post(
   async (req, res) => {
     try {
       const { title, description, tag } = req.body;
+      console.log(
+        "req.body>>",
+        req.body,
+        req.user.id,
+        " title, description, tag ",
+        title,
+        description,
+        tag
+      );
+      console.log("Incoming body:", req.body);
+
       //If there are errors return bad request and the errors
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -40,8 +51,11 @@ router.post(
         tag,
         user: req.user.id,
       });
+      console.log("note", note);
       const savedNote = await note.save();
       res.json(savedNote);
+      console.log("Saved Note :", savedNote);
+
     } catch (error) {
       console.error("Error Details: ", error.message);
       res.status(500).send({ success: false, message: error.message });

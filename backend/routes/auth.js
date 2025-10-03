@@ -20,6 +20,7 @@ router.post(
     }),
   ],
   async (req, res) => {
+    let success = false;
     //If there are errors, return Bad request and the errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -30,22 +31,21 @@ router.post(
       let user = await User.findOne({ email: req.body.email });
 
       if (user) {
-        return res
-          .status(400)
-          .json({ error: "Sorry a user with this email already exists" });
+        return res.status(400).json({
+          success,
+          error: "Sorry a user with this email already exists",
+        });
       }
 
       const password = String(req.body.password); // 🔒 ensure it's a string
 
       if (!password || typeof password !== "string") {
-        return res
-          .status(400)
-          .json({ success: false, message: "Invalid password" });
+        return res.status(400).json({ success, message: "Invalid password" });
       }
 
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(String(password), salt);
-
+      console.log("Incoming body:", req.body);
       //Create a new user
       user = await User.create({
         name: req.body.name,
@@ -57,9 +57,11 @@ router.post(
           id: user.id,
         },
       };
+      console.log("User saved:", user);
 
       const authtoken = jwt.sign(data, JWT_SECRET);
-      res.json({ authtoken });
+      success = true;
+      res.json({ success, authtoken });
     } catch (error) {
       console.error("Error Details: ", error.message);
       res.status(500).send({ success: false, message: error.message });
@@ -76,6 +78,7 @@ router.post(
     //body('password', 'Password must atleast 5 characters').isLength({min:5}),
   ],
   async (req, res) => {
+    let success = false;
     //If there are errors, return Bad request and the errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -83,17 +86,18 @@ router.post(
     }
     const { email, password } = req.body;
     try {
-      let user = User.findOne({ email });
+      let user = await User.findOne({ email });
       if (!user) {
         return res
           .status(400)
           .json({ error: "Please try to login with correct credentials" });
       }
-      const passwordCompare = bcrypt.compare(password, user.password);
+      const passwordCompare = await bcrypt.compare(password, user.password);
       if (!passwordCompare) {
-        return res
-          .status(400)
-          .json({ error: "Please try to login with correct credentials" });
+        return res.status(400).json({
+          success,
+          error: "Please try to login with correct credentials",
+        });
       }
 
       const data = {
@@ -105,7 +109,8 @@ router.post(
       };
 
       const authtoken = jwt.sign(data, JWT_SECRET);
-      res.json({ token: authtoken, message: "mangoo juice" });
+      success = true;
+      res.json({ success, authtoken, message: "mangoo juice" });
     } catch (error) {
       console.error("Error Details: ", error.message);
       res.status(500).send("Internal server error");

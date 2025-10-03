@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import noteContext from "../context/noteContext";
 
-const AddNote = () => {
+const AddNote = (props) => {
   const context = useContext(noteContext);
 
   const { addNote } = context;
@@ -9,12 +9,14 @@ const AddNote = () => {
   const [note, setNote] = useState({
     title: " ",
     description: " ",
-    tag: "default",
+    tag: " ",
   });
 
   const handleClick = (e) => {
     e.preventDefault();
     addNote(note.title, note.description, note.tag);
+    setNote({ title: " ", description: " ", tag: " " });
+    props.showAlert("Added successfully", "success");
   };
 
   const onChange = (e) => {
@@ -27,7 +29,7 @@ const AddNote = () => {
         <div className='container my-3'>
           <h3 className='my-3'>Add a Note</h3>
 
-          <form className='my-3'>
+          <form className='my-3' onSubmit={handleClick}>
             <div className='mb-3'>
               <label htmlFor='title' className='form-label'>
                 Title
@@ -41,6 +43,7 @@ const AddNote = () => {
                 onChange={onChange}
                 minLength={5}
                 required
+                value={note.title}
               />
             </div>
             <div className='mb-3'>
@@ -55,6 +58,7 @@ const AddNote = () => {
                 onChange={onChange}
                 minLength={5}
                 required
+                value={note.description}
               />
             </div>
             <div className='mb-3'>
@@ -69,13 +73,13 @@ const AddNote = () => {
                 onChange={onChange}
                 minLength={5}
                 required
+                value={note.tag}
               />
             </div>
             <button
               disabled={note.title.length < 5 || note.description.length < 5}
               type='submit'
               className='btn btn-primary'
-              onSubmit={handleClick}
               minLength={5}
               required
             >

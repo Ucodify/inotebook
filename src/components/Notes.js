@@ -2,22 +2,27 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import noteContext from "../context/noteContext";
 import Noteitem from "./Noteitem";
 import AddNote from "./AddNote";
+import { useNavigate } from "react-router-dom";
 
-function Notes() {
+function Notes(props) {
   const context = useContext(noteContext);
   const { notes, getNotes, editNote } = context;
   const refClose = useRef(null);
   const ref = useRef(null);
-
+  let navigate = useNavigate();
   const [note, setNote] = useState({
-    id: " ",
-    etitle: " ",
-    edescription: " ",
+    id: "",
+    etitle: "",
+    edescription: "",
     etag: "default",
   });
 
   useEffect(() => {
-    getNotes();
+    if (localStorage.getItem("token")) {
+      getNotes();
+    } else {
+      navigate("/login");
+    }
     // eslint-disable-next-line
   }, []);
   const updateNote = (currentNote) => {
@@ -34,6 +39,7 @@ function Notes() {
     console.log("Updating the note...", note);
     editNote(note.id, note.etitle, note.edescription, note.etag);
     refClose.current.click();
+    props.showAlert("Updated successfully", "success");
   };
 
   const onChange = (e) => {
@@ -42,7 +48,7 @@ function Notes() {
 
   return (
     <div className='row my-3 container'>
-      <AddNote />
+      <AddNote showAlert={props.showAlert} />
 
       <button
         type='button'
@@ -114,7 +120,6 @@ function Notes() {
                     name='etag'
                     onChange={onChange}
                     value={note.etag}
-                    minLength={5}
                     required
                   />
                 </div>
@@ -133,9 +138,9 @@ function Notes() {
                 type='button'
                 className='btn btn-primary'
                 onClick={handleClick}
-                // disabled={
-                //   note.etitle.length < 5 || note.edescription.length < 5
-                // }
+                disabled={
+                  note.etitle.length < 5 || note.edescription.length < 5
+                }
               >
                 Update Note
               </button>
@@ -145,12 +150,19 @@ function Notes() {
       </div>
 
       <h3>Your Notes</h3>
-      <div className='container mx-2'>
-        {notes.length === 0 && "No notes to display"}
-      </div>
-      {notes.map((note) => {
-        return <Noteitem key={note._id} note={note} updateNote={updateNote} />;
-      })}
+
+      {notes.length === 0
+        ? "No notes to display"
+        : notes.map((note) => {
+            return (
+              <Noteitem
+                key={note._id}
+                note={note}
+                updateNote={updateNote}
+                showAlert={props.showAlert}
+              />
+            );
+          })}
     </div>
   );
 }
