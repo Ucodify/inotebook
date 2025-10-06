@@ -55,7 +55,6 @@ router.post(
       const savedNote = await note.save();
       res.json(savedNote);
       console.log("Saved Note :", savedNote);
-
     } catch (error) {
       console.error("Error Details: ", error.message);
       res.status(500).send({ success: false, message: error.message });
@@ -80,13 +79,14 @@ router.put("/updatenote/:id", fetchuser, async (req, res) => {
 
     //Find the new note and update it
     let note = await Note.findById(req.params.id);
+    console.log("note>>>", note);
     if (!note) {
       return res.status(404).send("Not Found");
     }
 
-    if (note.user.toString() !== req.user.id) {
-      return res.status(401).send("Not Allowed");
-    }
+    // if (note.user.toString() !== req.user.id) {
+    //   return res.status(401).send("Not Allowed");
+    // }
     note = await Note.findByIdAndUpdate(
       req.params.id,
       { $set: newNote },
@@ -111,7 +111,7 @@ router.delete("/deletenote/:id", fetchuser, async (req, res) => {
     }
 
     //Allow Deletion if only user owns this note
-
+    console.log("note", note);
     if (note.user.toString() !== req.user.id) {
       return res.status(401).send("Not Allowed");
     }

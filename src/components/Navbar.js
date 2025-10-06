@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 const Navbar = () => {
   let navigate = useNavigate();
   const handleLogout = () => {
-    localStorage.removeItem("authtoken"); //yahan token likha tha pehle
+    localStorage.removeItem("token"); 
     navigate("/login");
   };
   let location = useLocation();

@@ -36,7 +36,7 @@ const NoteState = (props) => {
         },
         body: JSON.stringify({ title, description, tag }),
       });
-      //problematic backend pe data add ni hora
+   
       const savedNote = await response.json();
       console.log("Saved Note: ", savedNote);
 
@@ -62,7 +62,7 @@ const NoteState = (props) => {
         "auth-token": localStorage.getItem("token"),
       },
     });
-    const json = response.json();
+    const json = await response.json();
     console.log(json);
 
     console.log("Deleting the note with id" + id);

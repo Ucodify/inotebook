@@ -23,7 +23,7 @@ const Login = (props) => {
     console.log(json);
     if (json.success) {
       //Save the auth token and redirect
-      localStorage.setItem("token", json.authtoken); //usne authtoken likha tha lekin kyunke mene backend me token:authtoken kiya tha islye ayse kiya ha isy 
+      localStorage.setItem("token", json.authtoken); 
       navigate("/");
       props.showAlert(" Account Login Successful", "success");
     } else {

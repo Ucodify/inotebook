@@ -110,7 +110,7 @@ router.post(
 
       const authtoken = jwt.sign(data, JWT_SECRET);
       success = true;
-      res.json({ success, authtoken, message: "mangoo juice" });
+      res.json({ success, authtoken });
     } catch (error) {
       console.error("Error Details: ", error.message);
       res.status(500).send("Internal server error");

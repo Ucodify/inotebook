@@ -150,19 +150,20 @@ function Notes(props) {
       </div>
 
       <h3>Your Notes</h3>
-
-      {notes.length === 0
-        ? "No notes to display"
-        : notes.map((note) => {
-            return (
-              <Noteitem
-                key={note._id}
-                note={note}
-                updateNote={updateNote}
-                showAlert={props.showAlert}
-              />
-            );
-          })}
+      <div className='container mx-2'>
+        {notes.length === 0 && "No notes to display"}
+      </div>
+      {notes &&
+        notes.map((note) => {
+          return (
+            <Noteitem
+              key={note._id}
+              note={note}
+              updateNote={updateNote}
+              showAlert={props.showAlert}
+            />
+          );
+        })}
     </div>
   );
 }
